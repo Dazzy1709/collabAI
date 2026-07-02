@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { SignupData } from '../../types/auth.types';
+import { useNavigate } from 'react-router';
 
 
 type Errors = Partial<Record<keyof SignupData, string>>;
 
 const SignupForm = () => {
   const [form, setForm] = useState<SignupData>({
-    name: '',
+    username: '',
     password: '',
     confirmPassword: '',
     avatar_url: ''
@@ -15,6 +16,12 @@ const SignupForm = () => {
   const [consoleMessage, setConsoleMessage] = useState('');
   const [isError, setIsError] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
+
+  const navigate = useNavigate();
+
+  const redirectHome = () => {
+    navigate('/');
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -28,10 +35,10 @@ const SignupForm = () => {
   const validate = (): boolean => {
     const next: Errors = {};
 
-    if (!form.name.trim()) {
-      next.name = 'name is required.';
-    } else if (form.name.length < 3) {
-      next.name = 'name must be at least 3 characters.';
+    if (!form.username.trim()) {
+      next.username = 'name is required.';
+    } else if (form.username.length < 3) {
+      next.username = 'name must be at least 3 characters.';
     }
 
     if (!form.password) {
@@ -50,7 +57,7 @@ const SignupForm = () => {
     return Object.keys(next).length === 0;
   };
 
-  const handleFormSubmission = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmission = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setConsoleMessage('');
     setIsError(false);
@@ -60,20 +67,25 @@ const SignupForm = () => {
     setLoading(true);
 
     try {
-      const res = await fetch('', {
+      const res = await fetch('/auth/signup', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
-          name: form.name,
+          username: form.username,
           password: form.password,
+       
         }),
+        
       });
+      console.log(form.username)
+
       const data = await res.json();
       if (!res.ok) {
         setIsError(true);
         setConsoleMessage(data.message || 'Something went wrong.');
       } else {
         setConsoleMessage(data.message);
+        redirectHome();
       }
     } catch (err) {
       setIsError(true);
@@ -130,28 +142,28 @@ const SignupForm = () => {
             {/* name */}
             <div className="mb-4">
               <label
-                htmlFor="name"
+                htmlFor="username"
                 className="block text-[11px] font-medium text-neutral-500 uppercase tracking-widest mb-2"
               >
-                name
+                Username
               </label>
               <input
-                id="name"
+                id="username"
                 type="text"
-                name="name"
+                name="username"
                 placeholder="your_username"
-                value={form.name}
+                value={form.username}
                 onChange={handleChange}
                 required
                 autoComplete="name"
                 className={`w-full px-3.5 py-3 bg-neutral-50 border rounded-lg text-sm text-[#0a0a0a] placeholder:text-neutral-300 outline-none transition-all focus:bg-white ${
-                  errors.name
+                  errors.username
                     ? 'border-red-300 focus:border-red-400'
                     : 'border-neutral-200 focus:border-[#0a0a0a]'
                 }`}
               />
-              {errors.name && (
-                <p className="mt-1.5 text-xs text-red-500">{errors.name}</p>
+              {errors.username && (
+                <p className="mt-1.5 text-xs text-red-500">{errors.username}</p>
               )}
             </div>
 

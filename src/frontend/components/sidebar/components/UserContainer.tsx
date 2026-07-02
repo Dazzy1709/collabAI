@@ -6,7 +6,7 @@ import UserProfile from './UserProfile';
 type Props = {}
 
 const UserContainer = (props: Props) => {
-const [loggedIn, setLoggedIn] = useState(true);
+const [loggedIn, setLoggedIn] = useState(false);
 
   return (
     <div>
