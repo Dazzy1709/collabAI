@@ -20,5 +20,4 @@ pool.connect((err, client, release) => {
   release();
 });
 
-
 export default pool;

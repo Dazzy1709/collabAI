@@ -1,10 +1,10 @@
 export interface LoginData {
-  name: string,
+  username: string,
   password: string
 }
 
 export interface SignupData {
-  name: string,
+  username: string,
   password: string,
   confirmPassword: string,
   avatar_url: string
@@ -14,6 +14,6 @@ export interface AuthResponse {
   token: string,
   user : {
     id: number,
-    name: string,
+    username: string,
   }
 }
