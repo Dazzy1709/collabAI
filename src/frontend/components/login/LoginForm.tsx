@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import type { LoginData } from '../../types/auth.types';
 
 const LoginForm = () => {
-  const [form, setForm] = useState<LoginData>({ name: '', password: '' });
+  const [form, setForm] = useState<LoginData>({ username: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [consoleMessage, setConsoleMessage] = useState('');
   const [isError, setIsError] = useState(false);
@@ -18,8 +18,8 @@ const LoginForm = () => {
     setIsError(false);
 
     try {
-      const res = await fetch('/login', {
-        method: 'GET',
+      const res = await fetch('/auth/login', {
+        method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(form),
       });
@@ -82,7 +82,7 @@ const LoginForm = () => {
                 type="text"
                 name="name"
                 placeholder="your_username"
-                value={form.name}
+                value={form.username}
                 onChange={handleChange}
                 required
                 autoComplete="username"

@@ -77,13 +77,14 @@ const SignupForm = () => {
         }),
         
       });
-      console.log(form.username)
+      console.log(form.username);
 
       const data = await res.json();
       if (!res.ok) {
         setIsError(true);
         setConsoleMessage(data.message || 'Something went wrong.');
       } else {
+        console.log(res)
         setConsoleMessage(data.message);
         redirectHome();
       }
