@@ -1,14 +1,14 @@
 export interface LoginData {
   username: string,
   password: string
-}
+};
 
 export interface SignupData {
   username: string,
   password: string,
   confirmPassword: string,
   avatar_url: string
-}
+};
 
 export interface AuthResponse {
   token: string,
@@ -16,4 +16,4 @@ export interface AuthResponse {
     id: number,
     username: string,
   }
-}
+};

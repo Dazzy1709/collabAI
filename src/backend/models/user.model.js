@@ -16,36 +16,40 @@ async function createUser (username, password, avatar_url) {
     return result.rows[0]; 
   } catch (err) {
     console.error(err);
+    throw new Error(err)
   }
 }
 
 //Sign user in using the SearchProfile Function, bcrypt and creating a token witb JWT
 async function searchUser (username, password) {
-
+  try {
     //Search for the Username
-    const result = await pool.query(
+    const usernameResult = await pool.query(
       'SELECT * FROM users WHERE username = $1' , [username]
       );
-    if (result.rows.length === 0) {
-      return result.status(400).json({error: 'User not found'})
+    if (usernameResult.rows.length === 0) {
+      throw new Error('User not found')  
     };
-
     //Compare the passwords for Auth
-    const user = result.rows[0];
-    comparePassword(password, user.password_hash);
-
-    //JWT TOKEN
-    createJwtToken(user);
-}
-
+    const user = usernameResult.rows[0];
+    const passwordResult = await comparePasswordWithBcrypt(password, user.password_hash);
+    if (!passwordResult) {
+      throw new Error ('Invalid password')
+    }
+      //JWT TOKEN
+    return createJwtToken(user);
+    
+  } catch (err) {
+    console.error(err);
+    throw new Error(err)
+  }
+};
 
 //Utility functions
 //Compares the typed password with the hashed password
-function comparePassword (password, password_hash) {
-  const isValid = bcrypt.compare(password, password_hash);
-  if (!isValid) {
-    return res.status(400).json({ error: 'Invalid password' });
-    }
+async function comparePasswordWithBcrypt (password, password_hash) {
+  const isValid = await bcrypt.compare(password, password_hash);
+  return isValid;
 };
 
 //Creates a JWT token with the user data
@@ -56,5 +60,4 @@ function createJwtToken (user) {
    return token;
 };
 
-
-export default {createUser, searchUser};
+export {createUser, searchUser};
